@@ -1,5 +1,4 @@
-import logo from './logo.svg';
-import './App.css';
+import './App.scss';
 import { useState } from 'react';
 
 
@@ -10,28 +9,28 @@ function App() {
 
   function baseDaily(e) {
     setDaily(e.target.value);
-    const v = parseFloat(e.target.value);
+    const v = parseFloat(e.target.value / 100);
     if (v) {
-      setMonthly( Math.pow(1+v, 30)-1 );
-      setYearly( Math.pow(1+v, 365)-1 );
+      setMonthly( (Math.pow(1+v, 30)-1) * 100 );
+      setYearly( (Math.pow(1+v, 365)-1) * 100 );
     }
   }
 
   function baseMonthly(e) {
     setMonthly(e.target.value);
-    const v = parseFloat(e.target.value);
+    const v = parseFloat(e.target.value / 100);
     if (v) {
-      setDaily( Math.pow(1+v, 1/30)-1 );
-      setYearly( Math.pow(1+v, 12)-1 );
+      setDaily( (Math.pow(1+v, 1/30)-1) * 100 );
+      setYearly( (Math.pow(1+v, 12)-1) * 100);
     }
   }
 
   function baseYearly(e) {
     setYearly(e.target.value);
-    const v = parseFloat(e.target.value);
+    const v = parseFloat(e.target.value / 100);
     if (v) {
-      setDaily( Math.pow(1+v, 1/365)-1 );
-      setMonthly( Math.pow(1+v, 1/12)-1 );
+      setDaily( (Math.pow(1+v, 1/365)-1) * 100);
+      setMonthly( (Math.pow(1+v, 1/12)-1) * 100);
     }
   }
 
