@@ -35,27 +35,29 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <fieldset>
-          <label>Daily 
-            <input type="text" value={daily} onChange={baseDaily} /> 
-          </label>
-        </fieldset>
-        <fieldset> 
-          <label>
-            Monthly
-          <input type="text" value={monthly} onChange={baseMonthly} /> 
-          </label>
-        </fieldset>
-        <fieldset>
-          <label>
-            Yearly
-          </label>
-          <input type="text" value={yearly} onChange={baseYearly} /> 
-        </fieldset>
-      </header>
-    </div>
+    <>
+      <div className="field">
+        <label className="label">Daily</label>
+        <div className="control">
+          <input className="input" type="text"  value={daily} onChange={baseDaily} />
+        </div>
+        <p className="help">Daily inerest rate in %</p>
+      </div>
+      <div className="field">
+        <label className="label">Monthly</label>
+        <div className="control">
+          <input className="input" type="text"  value={monthly} onChange={baseMonthly} />
+        </div>
+        <p className="help">Monthly inerest rate in %</p>
+      </div>
+      <div className="field">
+        <label className="label">Yearly</label>
+        <div className="control">
+          <input className="input" type="text"  value={yearly} onChange={baseYearly} />
+        </div>
+        <p className="help">Yearly inerest rate in %</p>
+      </div>
+    </>
   );
 }
 
