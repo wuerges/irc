@@ -134,14 +134,14 @@ function App() {
         <div className="control">
           <input className="input" type="text"  value={monthlyAmount} onChange={baseMonthlyAmount} />
         </div>
-        <p className="help">Monthly interest rate in %</p>
+        <p className="help">Amount earned in a month.</p>
       </div>
       <div className="field">
         <label className="label">Yearly Amount</label>
         <div className="control">
           <input className="input" type="text"  value={yearlyAmount} onChange={baseYearlyAmount} />
         </div>
-        <p className="help">Yearly interest rate in %</p>
+        <p className="help">Amount earned in a year.</p>
       </div>
     </>
   );
