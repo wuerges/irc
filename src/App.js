@@ -1,5 +1,16 @@
 import './App.scss';
 import { useState } from 'react';
+import { evaluate } from 'mathjs';
+
+
+function calculate(expr) {
+  try {
+    return evaluate(expr);
+  }
+  catch(e) {
+    return NaN;
+  }
+}
 
 function App() {
   const [daily, setDaily] = useState(0);
@@ -13,71 +24,71 @@ function App() {
 
   function baseDaily(e) {
     setDaily( e.target.value );
-    const v = e.target.value / 100;
+    const v = calculate(e.target.value) / 100;
     const m = (Math.pow(1+v, 30)-1);
     const y = (Math.pow(1+v, 365)-1);
 
     setMonthly( m * 100 );
     setYearly( y * 100 );
 
-    baseAmountHelp(amount, v, m, y);
+    baseAmountHelp(calculate(amount), v, m, y);
   }
 
   function baseMonthly(e) {
     setMonthly( e.target.value );
-    const v = e.target.value / 100;
+    const v = calculate(e.target.value) / 100;
     const d = (Math.pow(1+v, 1/30)-1);
     const y = (Math.pow(1+v, 12)-1);
 
     setDaily( d * 100 );
     setYearly( y * 100);
 
-    baseAmountHelp(amount, d, v, y);
+    baseAmountHelp(calculate(amount), d, v, y);
   }
 
   function baseYearly(e) {
     setYearly( e.target.value );
-    const v = e.target.value / 100;
+    const v = calculate(e.target.value) / 100;
 
     const d = (Math.pow(1+v, 1/365)-1);
     const m = (Math.pow(1+v, 1/12)-1);
     setDaily( d * 100 );
     setMonthly( m * 100);
 
-    baseAmountHelp(amount, d, m, v);
+    baseAmountHelp(calculate(amount), d, m, v);
   }
 
   function baseDailyAmount(e) {
-    const v = e.target.value;
-    setDailyAmount(v);
-    const a = v / daily * 100;
+    setDailyAmount(e.target.value);
+    const v = calculate(e.target.value);
+    const a = v / calculate(daily) * 100;
     setAmount(a);
-    setMonthlyAmount(a * monthly / 100);
-    setYearlyAmount(a * yearly / 100);
+    setMonthlyAmount(a * calculate(monthly) / 100);
+    setYearlyAmount(a * calculate(yearly) / 100);
   }
   
   function baseMonthlyAmount(e) {
-    const v = e.target.value;
-    setMonthlyAmount(v);
-    const a = v / monthly * 100;
+    setMonthlyAmount(e.target.value);
+    const v = calculate(e.target.value);
+    const a = v / calculate(monthly) * 100;
     setAmount(a);
-    setDailyAmount(a * daily / 100);
-    setYearlyAmount(a * yearly / 100);
+    setDailyAmount(a * calculate(daily) / 100);
+    setYearlyAmount(a * calculate(yearly) / 100);
   }
   
   function baseYearlyAmount(e) {
-    const v = e.target.value;
-    setYearlyAmount(v);
-    const a = v / yearly * 100;
+    setYearlyAmount(e.target.value);
+    const v = calculate(e.target.value);
+    const a = v / calculate(yearly) * 100;
     setAmount(a);
-    setDailyAmount(a * daily / 100);
-    setMonthlyAmount(a * monthly / 100);
+    setDailyAmount(a * calculate(daily) / 100);
+    setMonthlyAmount(a * calculate(monthly) / 100);
   }
 
   function baseAmount(e) {
-    const v = e.target.value;
-    setAmount(v);
-    baseAmountHelp(v, daily/100, monthly/100, yearly/100);
+    setAmount(e.target.value);
+    const v = calculate(e.target.value);
+    baseAmountHelp(v, calculate(daily)/100, calculate(monthly)/100, calculate(yearly)/100);
   }
 
   function baseAmountHelp(v, d, m, y) {

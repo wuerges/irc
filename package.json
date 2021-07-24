@@ -7,6 +7,7 @@
     "@testing-library/react": "^12",
     "@testing-library/user-event": "^13",
     "bulma": "^0.9.3",
+    "mathjs": "^9.4.4",
     "node-sass": "^6",
     "react": "^17",
     "react-dom": "^17",
