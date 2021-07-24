@@ -98,50 +98,68 @@ function App() {
         </div>
         <p className="help">Amount to multiply by the interest.</p>
       </div>
-      <div className="field">
-        <label className="label">Daily</label>
-        <div className="control">
-          <input className="input" type="text"  
-            value={daily} onChange={baseDaily} />
+      <div className="columns">
+        <div className="column">
+          <div className="field">
+            <label className="label">Daily</label>
+            <div className="control">
+              <input className="input" type="text"  
+                value={daily} onChange={baseDaily} />
+            </div>
+            <p className="help">Daily interest rate in %.</p>
+          </div>
         </div>
-        <p className="help">Daily interest rate in %.</p>
+        <div className="column">
+          <div className="field">
+            <label className="label">Daily Amount</label>
+            <div className="control">
+              <input className="input" type="text"  value={dailyAmount} onChange={baseDailyAmount} />
+            </div>
+            <p className="help">Amount earned in a day.</p>
+          </div>
+        </div>
       </div>
-      <div className="field">
-        <label className="label">Monthly</label>
-        <div className="control">
-          <input className="input" type="text"  
-          value={monthly} onChange={baseMonthly} />
+      <div className="columns">
+        <div className="column">
+          <div className="field">
+            <label className="label">Monthly</label>
+            <div className="control">
+              <input className="input" type="text"  
+              value={monthly} onChange={baseMonthly} />
+            </div>
+            <p className="help">Monthly interest rate in %.</p>
+          </div>
         </div>
-        <p className="help">Monthly interest rate in %.</p>
+        <div className="column">
+          <div className="field">
+            <label className="label">Monthly Amount</label>
+            <div className="control">
+              <input className="input" type="text"  value={monthlyAmount} onChange={baseMonthlyAmount} />
+            </div>
+            <p className="help">Amount earned in a month.</p>
+          </div>
+        </div>
       </div>
-      <div className="field">
-        <label className="label">Yearly</label>
-        <div className="control">
-          <input className="input" type="text"  
-          value={yearly} onChange={baseYearly} />
+      <div className="columns">
+        <div className="column">
+          <div className="field">
+            <label className="label">Yearly</label>
+            <div className="control">
+              <input className="input" type="text"  
+              value={yearly} onChange={baseYearly} />
+            </div>
+            <p className="help">Yearly interest rate in %.</p>
+          </div>
         </div>
-        <p className="help">Yearly interest rate in %.</p>
-      </div>
-      <div className="field">
-        <label className="label">Daily Amount</label>
-        <div className="control">
-          <input className="input" type="text"  value={dailyAmount} onChange={baseDailyAmount} />
+        <div className="column">
+          <div className="field">
+            <label className="label">Yearly Amount</label>
+            <div className="control">
+              <input className="input" type="text"  value={yearlyAmount} onChange={baseYearlyAmount} />
+            </div>
+            <p className="help">Amount earned in a year.</p>
+          </div>
         </div>
-        <p className="help">Amount earned in a day.</p>
-      </div>
-      <div className="field">
-        <label className="label">Monthly Amount</label>
-        <div className="control">
-          <input className="input" type="text"  value={monthlyAmount} onChange={baseMonthlyAmount} />
-        </div>
-        <p className="help">Amount earned in a month.</p>
-      </div>
-      <div className="field">
-        <label className="label">Yearly Amount</label>
-        <div className="control">
-          <input className="input" type="text"  value={yearlyAmount} onChange={baseYearlyAmount} />
-        </div>
-        <p className="help">Amount earned in a year.</p>
       </div>
     </>
   );
