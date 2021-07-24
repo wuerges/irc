@@ -2,82 +2,49 @@ import './App.scss';
 import { useState } from 'react';
 
 function App() {
-  const [daily, setDaily] = useState(1);
+  const [daily, setDaily] = useState(0);
   const [monthly, setMonthly] = useState(0);
   const [yearly, setYearly] = useState(0);
 
-  const [amount, setAmount] = useState(100);
+  const [amount, setAmount] = useState(0);
   const [dailyAmount, setDailyAmount] = useState(0);
   const [monthlyAmount, setMonthlyAmount] = useState(0);
   const [yearlyAmount, setYearlyAmount] = useState(0);
 
-  // useEffect(() => {
-  //   const v = daily / 100;
-  //   setDaily(v);
-  //   if (v) {
-  //     setMonthly((Math.pow(1+v, 30)-1) * 100);
-  //     setYearly((Math.pow(1+v, 365)-1) * 100);
-  //   }
-  // }, [dailyE]);
-  // useEffect(baseMonthly, [monthlyE]);
-  // useEffect(baseYearly, [yearlyE]);
-  
-  // function fixAmounts() {
-    //   const v = parseFloat(amount);
-    
-    //   setDailyAmount(daily / 100 * v);
-  //   setMonthlyAmount(monthly / 100 * v);
-  //   setYearlyAmount(yearly / 100 * v);
-  // }
-
-  // function check(ref, d, u) {
-  //   return (e) => {
-  //     ref.current = e.target.value;
-  //     const v = parseFloat(e.target.value);
-  //     if(v) {
-  //       u(d+1);
-  //     }
-  //   }
-  // }
-
-  // function baseAmount(e) {
-  //   setAmount(e.target.value);
-  //   const v = parseFloat(e.target.value);
-  //   if (v) {
-  //     setEvent(Events.AMOUNT);
-  //   }    
-  // }
-
-  // function baseDailyAmount(e) {
-    
-  // }
-  // function baseMonthlyAmount(e) {
-    
-  // }
-  // function baseYearlyAmount(e) {
-    
-  // }
-
-
   function baseDaily(e) {
     setDaily( e.target.value );
     const v = e.target.value / 100;
-    setMonthly( (Math.pow(1+v, 30)-1) * 100 );
-    setYearly( (Math.pow(1+v, 365)-1) * 100);
+    const m = (Math.pow(1+v, 30)-1);
+    const y = (Math.pow(1+v, 365)-1);
+
+    setMonthly( m * 100 );
+    setYearly( y * 100 );
+
+    baseAmountHelp(amount, v, m, y);
   }
 
   function baseMonthly(e) {
     setMonthly( e.target.value );
     const v = e.target.value / 100;
-    setDaily( (Math.pow(1+v, 1/30)-1) * 100 );
-    setYearly( (Math.pow(1+v, 12)-1) * 100);
+    const d = (Math.pow(1+v, 1/30)-1);
+    const y = (Math.pow(1+v, 12)-1);
+
+    setDaily( d * 100 );
+    setYearly( y * 100);
+
+    baseAmountHelp(amount, d, v, y);
   }
 
   function baseYearly(e) {
     setYearly( e.target.value );
     const v = e.target.value / 100;
-    setDaily( (Math.pow(1+v, 1/365)-1) * 100);
-    setMonthly( (Math.pow(1+v, 1/12)-1) * 100);
+
+    const d = (Math.pow(1+v, 1/365)-1);
+    const m = (Math.pow(1+v, 1/12)-1);
+    setDaily( d * 100 );
+    setMonthly( m * 100);
+
+    baseAmountHelp(amount, d, m, v);
   }
 
   function baseDailyAmount(e) {
@@ -110,10 +77,16 @@ function App() {
   function baseAmount(e) {
     const v = e.target.value;
     setAmount(v);
-    setDailyAmount(v * daily / 100);
-    setMonthlyAmount(v * monthly / 100);
-    setYearlyAmount(v * yearly / 100);
+    baseAmountHelp(v, daily/100, monthly/100, yearly/100);
   }
+
+  function baseAmountHelp(v, d, m, y) {
+    setDailyAmount(v * d);
+    setMonthlyAmount(v * m);
+    setYearlyAmount(v * y);
+  }
+
+
 
   return (
     <>
