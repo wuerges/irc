@@ -109,7 +109,7 @@ function App() {
         </div>
         <p className="help">Amount to multiply by the interest.</p>
       </div>
-      <div className="columns">
+      <div className="columns is-mobile">
         <div className="column">
           <div className="field">
             <label className="label">Daily</label>
@@ -130,7 +130,7 @@ function App() {
           </div>
         </div>
       </div>
-      <div className="columns">
+      <div className="columns is-mobile">
         <div className="column">
           <div className="field">
             <label className="label">Monthly</label>
@@ -151,7 +151,7 @@ function App() {
           </div>
         </div>
       </div>
-      <div className="columns">
+      <div className="columns is-mobile">
         <div className="column">
           <div className="field">
             <label className="label">Yearly</label>
