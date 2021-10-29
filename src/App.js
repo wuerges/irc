@@ -12,6 +12,7 @@ function calculate(expr) {
   }
 }
 
+
 function App() {
   const [daily, setDaily] = useState(0);
   const [monthly, setMonthly] = useState(0);
