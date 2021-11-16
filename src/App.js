@@ -1,16 +1,7 @@
 import './App.scss';
-import { useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { evaluate } from 'mathjs';
 
-
-function calculate(expr) {
-  try {
-    return evaluate(expr);
-  }
-  catch(e) {
-    return NaN;
-  }
-}
 
 
 function App() {
@@ -22,6 +13,35 @@ function App() {
   const [dailyAmount, setDailyAmount] = useState(0);
   const [monthlyAmount, setMonthlyAmount] = useState(0);
   const [yearlyAmount, setYearlyAmount] = useState(0);
+
+  const rates = useRef({});
+
+  function calculate(expr) {
+    expr = expr.toString();
+    for(var k in rates.current) {
+      expr = expr.replaceAll(k, "1/"+rates.current[k]);
+    }
+  
+    try {
+      return evaluate(expr);
+    }
+    catch(e) {
+      return NaN;
+    }
+  }
+
+  useEffect(() => {
+
+    fetch('https://api.coinbase.com/v2/exchange-rates').then(
+      (response) => response.json()
+    ).then(
+      (data)  => {
+        rates.current = data['data']['rates'];
+      }
+    );
+  }, []);
+
+
 
   function baseDaily(e) {
     setDaily( e.target.value );
