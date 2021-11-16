@@ -19,7 +19,7 @@ function App() {
   function calculate(expr) {
     expr = expr.toString();
     for(var k in rates.current) {
-      expr = expr.replaceAll(k, "1/"+rates.current[k]);
+      expr = expr.replaceAll(k, "(1/"+rates.current[k]+")");
     }
   
     try {
