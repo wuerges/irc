@@ -9,6 +9,8 @@ function App() {
   const [monthly, setMonthly] = useState(0);
   const [yearly, setYearly] = useState(0);
 
+  const [totalAmount, setTotalAmount] = useState(0);
+
   const [amount, setAmount] = useState(0);
   const [dailyAmount, setDailyAmount] = useState(0);
   const [monthlyAmount, setMonthlyAmount] = useState(0);
@@ -83,7 +85,7 @@ function App() {
     setDailyAmount(e.target.value);
     const v = calculate(e.target.value);
     const a = v / calculate(daily) * 100;
-    setAmount(a);
+    setAmountAndTotal(a);
     setMonthlyAmount(a * calculate(monthly) / 100);
     setYearlyAmount(a * calculate(yearly) / 100);
   }
@@ -92,7 +94,7 @@ function App() {
     setMonthlyAmount(e.target.value);
     const v = calculate(e.target.value);
     const a = v / calculate(monthly) * 100;
-    setAmount(a);
+    setAmountAndTotal(a);
     setDailyAmount(a * calculate(daily) / 100);
     setYearlyAmount(a * calculate(yearly) / 100);
   }
@@ -101,17 +103,23 @@ function App() {
     setYearlyAmount(e.target.value);
     const v = calculate(e.target.value);
     const a = v / calculate(yearly) * 100;
-    setAmount(a);
+    setAmountAndTotal(a);
     setDailyAmount(a * calculate(daily) / 100);
     setMonthlyAmount(a * calculate(monthly) / 100);
   }
 
+  
   function baseAmount(e) {
-    setAmount(e.target.value);
+    setAmountAndTotal(e.target.value);
     const v = calculate(e.target.value);
     baseAmountHelp(v, calculate(daily)/100, calculate(monthly)/100, calculate(yearly)/100);
   }
 
+  function setAmountAndTotal(v) {
+    setAmount(v);
+    setTotalAmount(v);
+  }
+  
   function baseAmountHelp(v, d, m, y) {
     setDailyAmount(v * d);
     setMonthlyAmount(v * m);
@@ -122,13 +130,25 @@ function App() {
 
   return (
     <>
-      <div className="field">
-        <label className="label">Amount</label>
-        <div className="control">
-          <input className="input" type="text" 
-          value={amount} onChange={baseAmount} />
+      <div className="columns is-mobile">
+        <div className="column">
+          <div className="field">
+            <label className="label">Amount</label>
+            <div className="control">
+              <input className="input" type="text" 
+              value={amount} onChange={baseAmount} />
+            </div>
+            <p className="help">Amount to multiply by the interest.</p>
+          </div>
+          <div className="column">
+            <div className="field">
+              <div className="control">
+                <input className="input" type="text" 
+                  value={totalAmount} />
+              </div>
+            </div>
+          </div>
         </div>
-        <p className="help">Amount to multiply by the interest.</p>
       </div>
       <div className="columns is-mobile">
         <div className="column">
