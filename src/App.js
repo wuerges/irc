@@ -117,7 +117,7 @@ function App() {
 
   function setAmountAndTotal(v) {
     setAmount(v);
-    setTotalAmount(v);
+    setTotalAmount(calculate(v));
   }
   
   function baseAmountHelp(v, d, m, y) {
@@ -130,10 +130,10 @@ function App() {
 
   return (
     <>
-      <div className="columns is-mobile">
-        <div className="column">
-          <div className="field">
-            <label className="label">Amount</label>
+      <div className="field">
+        <label className="label">Amount</label>
+        <div className="columns is-mobile">
+          <div className="column">
             <div className="control">
               <input className="input" type="text" 
               value={amount} onChange={baseAmount} />
@@ -144,7 +144,7 @@ function App() {
             <div className="field">
               <div className="control">
                 <input className="input" type="text" 
-                  value={totalAmount} />
+                  value={totalAmount} disabled/>
               </div>
             </div>
           </div>
