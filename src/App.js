@@ -6,6 +6,11 @@ function App() {
   const [daily, setDaily] = useState(0);
   const [monthly, setMonthly] = useState(0);
   const [yearly, setYearly] = useState(0);
+  const [yearly5, setYearly5] = useState(0);
+
+  const dailyRef = useRef();
+  const monthlyRef = useRef();
+  const yearly5Ref = useRef();
 
   const [totalAmount, setTotalAmount] = useState(0);
 
@@ -13,6 +18,12 @@ function App() {
   const [dailyAmount, setDailyAmount] = useState(0);
   const [monthlyAmount, setMonthlyAmount] = useState(0);
   const [yearlyAmount, setYearlyAmount] = useState(0);
+  const [yearly5Amount, setYearly5Amount] = useState(0);
+
+  const dailyAmountRef = useRef();
+  const monthlyAmountRef = useRef();
+  const yearlyAmountRef = useRef();
+  const yearly5AmountRef = useRef();
 
   const rates = useRef({});
 
@@ -29,6 +40,13 @@ function App() {
     }
   }
 
+  function percentToFactor(p) {
+    return p / 100;
+  }
+  function factorToPercent(f) {
+    return f * 100;
+  }
+
   useEffect(() => {
     fetch("https://api.coinbase.com/v2/exchange-rates")
       .then((response) => response.json())
@@ -37,89 +55,88 @@ function App() {
       });
   }, []);
 
+  useEffect(() => {
+    setTotalAmount(calculate(amount));
+  }, [amount]);
+
+  useEffect(() => {
+    const v = 1 + percentToFactor(calculate(yearly));
+    const daily_v = Math.pow(v, 1 / 365) - 1;
+    const monthly_v = Math.pow(v, 1 / 12) - 1;
+    const yearly5_v = Math.pow(v, 5) - 1;
+
+    if (document.activeElement !== dailyRef.current) {
+      setDaily(factorToPercent(daily_v));
+    }
+    if (document.activeElement !== monthlyRef.current) {
+      setMonthly(factorToPercent(monthly_v));
+    }
+    if (document.activeElement !== yearly5Ref.current) {
+      setYearly5(factorToPercent(yearly5_v));
+    }
+
+    if (document.activeElement !== dailyAmountRef.current) {
+      setDailyAmount(totalAmount * daily_v);
+    }
+    if (document.activeElement !== monthlyAmountRef.current) {
+      setMonthlyAmount(totalAmount * monthly_v);
+    }
+    if (document.activeElement !== yearlyAmountRef.current) {
+      setYearlyAmount(totalAmount * (v - 1));
+    }
+    if (document.activeElement !== yearly5AmountRef.current) {
+      setYearly5Amount(totalAmount * yearly5_v);
+    }
+  }, [yearly, totalAmount]);
+
   function baseDaily(e) {
     setDaily(e.target.value);
-    const v = calculate(e.target.value) / 100;
-    const m = Math.pow(1 + v, 30) - 1;
-    const y = Math.pow(1 + v, 365) - 1;
-
-    setMonthly(m * 100);
-    setYearly(y * 100);
-
-    baseAmountHelp(calculate(amount), v, m, y);
+    const v = 1 + percentToFactor(calculate(e.target.value));
+    setYearly(factorToPercent(Math.pow(v, 365) - 1));
   }
 
   function baseMonthly(e) {
     setMonthly(e.target.value);
-    const v = calculate(e.target.value) / 100;
-    const d = Math.pow(1 + v, 1 / 30) - 1;
-    const y = Math.pow(1 + v, 12) - 1;
-
-    setDaily(d * 100);
-    setYearly(y * 100);
-
-    baseAmountHelp(calculate(amount), d, v, y);
+    const v = 1 + percentToFactor(calculate(e.target.value));
+    setYearly(factorToPercent(Math.pow(v, 12) - 1));
   }
 
   function baseYearly(e) {
     setYearly(e.target.value);
-    const v = calculate(e.target.value) / 100;
+  }
 
-    const d = Math.pow(1 + v, 1 / 365) - 1;
-    const m = Math.pow(1 + v, 1 / 12) - 1;
-    setDaily(d * 100);
-    setMonthly(m * 100);
-
-    baseAmountHelp(calculate(amount), d, m, v);
+  function baseYearly5(e) {
+    setYearly5(e.target.value);
+    const v = 1 + percentToFactor(calculate(e.target.value));
+    setYearly(factorToPercent(Math.pow(v, 1 / 5) - 1));
   }
 
   function baseDailyAmount(e) {
     setDailyAmount(e.target.value);
     const v = calculate(e.target.value);
-    const a = (v / calculate(daily)) * 100;
-    setAmountAndTotal(a);
-    setMonthlyAmount((a * calculate(monthly)) / 100);
-    setYearlyAmount((a * calculate(yearly)) / 100);
+    setAmount(v / percentToFactor(daily));
   }
 
   function baseMonthlyAmount(e) {
     setMonthlyAmount(e.target.value);
     const v = calculate(e.target.value);
-    const a = (v / calculate(monthly)) * 100;
-    setAmountAndTotal(a);
-    setDailyAmount((a * calculate(daily)) / 100);
-    setYearlyAmount((a * calculate(yearly)) / 100);
+    setAmount(v / percentToFactor(monthly));
   }
 
   function baseYearlyAmount(e) {
     setYearlyAmount(e.target.value);
     const v = calculate(e.target.value);
-    const a = (v / calculate(yearly)) * 100;
-    setAmountAndTotal(a);
-    setDailyAmount((a * calculate(daily)) / 100);
-    setMonthlyAmount((a * calculate(monthly)) / 100);
+    setAmount(v / percentToFactor(yearly));
+  }
+
+  function baseYearly5Amount(e) {
+    setYearly5Amount(e.target.value);
+    const v = calculate(e.target.value);
+    setAmount(v / percentToFactor(yearly5));
   }
 
   function baseAmount(e) {
-    setAmountAndTotal(e.target.value);
-    const v = calculate(e.target.value);
-    baseAmountHelp(
-      v,
-      calculate(daily) / 100,
-      calculate(monthly) / 100,
-      calculate(yearly) / 100
-    );
-  }
-
-  function setAmountAndTotal(v) {
-    setAmount(v);
-    setTotalAmount(calculate(v));
-  }
-
-  function baseAmountHelp(v, d, m, y) {
-    setDailyAmount(v * d);
-    setMonthlyAmount(v * m);
-    setYearlyAmount(v * y);
+    setAmount(e.target.value);
   }
 
   return (
@@ -161,6 +178,7 @@ function App() {
                 className="input"
                 type="text"
                 value={daily}
+                ref={dailyRef}
                 onChange={baseDaily}
               />
             </div>
@@ -175,6 +193,7 @@ function App() {
                 className="input"
                 type="text"
                 value={dailyAmount}
+                ref={dailyAmountRef}
                 onChange={baseDailyAmount}
               />
             </div>
@@ -191,6 +210,7 @@ function App() {
                 className="input"
                 type="text"
                 value={monthly}
+                ref={monthlyRef}
                 onChange={baseMonthly}
               />
             </div>
@@ -204,6 +224,7 @@ function App() {
               <input
                 className="input"
                 type="text"
+                ref={monthlyAmountRef}
                 value={monthlyAmount}
                 onChange={baseMonthlyAmount}
               />
@@ -235,10 +256,44 @@ function App() {
                 className="input"
                 type="text"
                 value={yearlyAmount}
+                ref={yearlyAmountRef}
                 onChange={baseYearlyAmount}
               />
             </div>
             <p className="help">Amount earned in a year.</p>
+          </div>
+        </div>
+      </div>
+      <div className="columns is-mobile">
+        <div className="column">
+          <div className="field">
+            <label className="label">5 years</label>
+            <div className="control">
+              <input
+                className="input"
+                type="text"
+                value={yearly5}
+                ref={yearly5Ref}
+                onChange={baseYearly5}
+              />
+            </div>
+            <p className="help">Yearly interest rate in 5 years in %.</p>
+          </div>
+        </div>
+
+        <div className="column">
+          <div className="field">
+            <label className="label">5 year Amount</label>
+            <div className="control">
+              <input
+                className="input"
+                type="text"
+                value={yearly5Amount}
+                ref={yearly5AmountRef}
+                onChange={baseYearly5Amount}
+              />
+            </div>
+            <p className="help">Amount earned in 5 years.</p>
           </div>
         </div>
       </div>
