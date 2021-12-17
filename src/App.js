@@ -25,6 +25,18 @@ function App() {
   const yearlyAmountRef = useRef();
   const yearly5AmountRef = useRef();
 
+  useEffect(() => {
+    const saved = JSON.parse(window.localStorage.getItem("data"));
+    if (saved) {
+      setYearly(saved.yearly);
+      setAmount(saved.amount);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem("data", JSON.stringify({ yearly, amount }));
+  }, [yearly, amount]);
+
   const rates = useRef({});
 
   function calculate(expr) {
@@ -52,8 +64,9 @@ function App() {
       .then((response) => response.json())
       .then((data) => {
         rates.current = data["data"]["rates"];
+        setTotalAmount(calculate(amount));
       });
-  }, []);
+  }, [amount]);
 
   useEffect(() => {
     setTotalAmount(calculate(amount));
