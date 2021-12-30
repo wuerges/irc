@@ -2,11 +2,32 @@ import "./App.scss";
 import { useRef, useEffect, useState } from "react";
 import { evaluate } from "mathjs";
 
+function calculate(expr, rates) {
+  expr = expr.toString();
+  for (var k in rates) {
+    expr = expr.replaceAll(k, "(1/" + rates[k] + ")");
+  }
+
+  try {
+    return evaluate(expr);
+  } catch (e) {
+    return NaN;
+  }
+}
+
+function percentToFactor(p) {
+  return p / 100;
+}
+function factorToPercent(f) {
+  return f * 100;
+}
+
 function App() {
   const [daily, setDaily] = useState(0);
   const [monthly, setMonthly] = useState(0);
   const [yearly, setYearly] = useState(0);
   const [yearly5, setYearly5] = useState(0);
+  const [rates, setRates] = useState({});
 
   const dailyRef = useRef();
   const monthlyRef = useRef();
@@ -31,53 +52,31 @@ function App() {
       if (saved) {
         setYearly(saved.yearly);
         setAmount(saved.amount);
+        setRates(saved.rates);
       }
     } catch (e) {
       console.error(e);
     }
-  }, []);
-
-  useEffect(() => {
-    window.localStorage.setItem("data", JSON.stringify({ yearly, amount }));
-  }, [yearly, amount]);
-
-  const rates = useRef({});
-
-  function calculate(expr) {
-    expr = expr.toString();
-    for (var k in rates.current) {
-      expr = expr.replaceAll(k, "(1/" + rates.current[k] + ")");
-    }
-
-    try {
-      return evaluate(expr);
-    } catch (e) {
-      return NaN;
-    }
-  }
-
-  function percentToFactor(p) {
-    return p / 100;
-  }
-  function factorToPercent(f) {
-    return f * 100;
-  }
-
-  useEffect(() => {
     fetch("https://api.coinbase.com/v2/exchange-rates")
       .then((response) => response.json())
       .then((data) => {
-        rates.current = data["data"]["rates"];
-        setTotalAmount(calculate(amount));
+        setRates(data["data"]["rates"]);
       });
-  }, [amount]);
+  }, []);
 
   useEffect(() => {
-    setTotalAmount(calculate(amount));
-  }, [amount]);
+    window.localStorage.setItem(
+      "data",
+      JSON.stringify({ yearly, amount, rates })
+    );
+  }, [yearly, amount, rates]);
 
   useEffect(() => {
-    const v = 1 + percentToFactor(calculate(yearly));
+    setTotalAmount(calculate(amount, rates));
+  }, [amount, rates]);
+
+  useEffect(() => {
+    const v = 1 + percentToFactor(calculate(yearly, rates));
     const daily_v = Math.pow(v, 1 / 365) - 1;
     const monthly_v = Math.pow(v, 1 / 12) - 1;
     const yearly5_v = Math.pow(v, 5) - 1;
@@ -104,17 +103,17 @@ function App() {
     if (document.activeElement !== yearly5AmountRef.current) {
       setYearly5Amount(totalAmount * yearly5_v);
     }
-  }, [yearly, totalAmount]);
+  }, [yearly, totalAmount, rates]);
 
   function baseDaily(e) {
     setDaily(e.target.value);
-    const v = 1 + percentToFactor(calculate(e.target.value));
+    const v = 1 + percentToFactor(calculate(e, rates.target.value));
     setYearly(factorToPercent(Math.pow(v, 365) - 1));
   }
 
   function baseMonthly(e) {
     setMonthly(e.target.value);
-    const v = 1 + percentToFactor(calculate(e.target.value));
+    const v = 1 + percentToFactor(calculate(e, rates.target.value));
     setYearly(factorToPercent(Math.pow(v, 12) - 1));
   }
 
@@ -124,31 +123,31 @@ function App() {
 
   function baseYearly5(e) {
     setYearly5(e.target.value);
-    const v = 1 + percentToFactor(calculate(e.target.value));
+    const v = 1 + percentToFactor(calculate(e, rates.target.value));
     setYearly(factorToPercent(Math.pow(v, 1 / 5) - 1));
   }
 
   function baseDailyAmount(e) {
     setDailyAmount(e.target.value);
-    const v = calculate(e.target.value);
+    const v = calculate(e, rates.target.value);
     setAmount(v / percentToFactor(daily));
   }
 
   function baseMonthlyAmount(e) {
     setMonthlyAmount(e.target.value);
-    const v = calculate(e.target.value);
+    const v = calculate(e, rates.target.value);
     setAmount(v / percentToFactor(monthly));
   }
 
   function baseYearlyAmount(e) {
     setYearlyAmount(e.target.value);
-    const v = calculate(e.target.value);
+    const v = calculate(e, rates.target.value);
     setAmount(v / percentToFactor(yearly));
   }
 
   function baseYearly5Amount(e) {
     setYearly5Amount(e.target.value);
-    const v = calculate(e.target.value);
+    const v = calculate(e, rates.target.value);
     setAmount(v / percentToFactor(yearly5));
   }
 
