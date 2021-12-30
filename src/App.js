@@ -26,10 +26,14 @@ function App() {
   const yearly5AmountRef = useRef();
 
   useEffect(() => {
-    const saved = JSON.parse(window.localStorage.getItem("data"));
-    if (saved) {
-      setYearly(saved.yearly);
-      setAmount(saved.amount);
+    try {
+      const saved = JSON.parse(window.localStorage.getItem("data"));
+      if (saved) {
+        setYearly(saved.yearly);
+        setAmount(saved.amount);
+      }
+    } catch (e) {
+      console.error(e);
     }
   }, []);
 
