@@ -107,13 +107,13 @@ function App() {
 
   function baseDaily(e) {
     setDaily(e.target.value);
-    const v = 1 + percentToFactor(calculate(e, rates.target.value));
+    const v = 1 + percentToFactor(calculate(e.target.value, rates));
     setYearly(factorToPercent(Math.pow(v, 365) - 1));
   }
 
   function baseMonthly(e) {
     setMonthly(e.target.value);
-    const v = 1 + percentToFactor(calculate(e, rates.target.value));
+    const v = 1 + percentToFactor(calculate(e.target.value, rates));
     setYearly(factorToPercent(Math.pow(v, 12) - 1));
   }
 
@@ -123,31 +123,31 @@ function App() {
 
   function baseYearly5(e) {
     setYearly5(e.target.value);
-    const v = 1 + percentToFactor(calculate(e, rates.target.value));
+    const v = 1 + percentToFactor(calculate(e.target.value, rates));
     setYearly(factorToPercent(Math.pow(v, 1 / 5) - 1));
   }
 
   function baseDailyAmount(e) {
     setDailyAmount(e.target.value);
-    const v = calculate(e, rates.target.value);
+    const v = calculate(e.target.value, rates);
     setAmount(v / percentToFactor(daily));
   }
 
   function baseMonthlyAmount(e) {
     setMonthlyAmount(e.target.value);
-    const v = calculate(e, rates.target.value);
+    const v = calculate(e.target.value, rates);
     setAmount(v / percentToFactor(monthly));
   }
 
   function baseYearlyAmount(e) {
     setYearlyAmount(e.target.value);
-    const v = calculate(e, rates.target.value);
+    const v = calculate(e.target.value, rates);
     setAmount(v / percentToFactor(yearly));
   }
 
   function baseYearly5Amount(e) {
     setYearly5Amount(e.target.value);
-    const v = calculate(e, rates.target.value);
+    const v = calculate(e.target.value, rates);
     setAmount(v / percentToFactor(yearly5));
   }
 
