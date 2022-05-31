@@ -46,17 +46,9 @@ const Field = (props) => {
 };
 
 function App() {
-  const [daily, setDaily] = useState(0);
-  const [monthly, setMonthly] = useState(0);
-  const [yearly, setYearly] = useState(0);
-  const [yearly5, setYearly5] = useState(0);
   const [rates, setRates] = useState({});
 
-
   const [yearlyRate, setYearlyRate] = useState(1);
-
-  // const yearlyRate = 1+percentToFactor(yearly);
-  // const setYearlyRate = (r) => setYearly(factorToPercent(r-1));
 
   const dailyRate = Math.pow(yearlyRate, 1/365);
   const setDailyRate = (r) => setYearlyRate(Math.pow(r, 365));
@@ -67,30 +59,16 @@ function App() {
   const yearly5Rate = Math.pow(yearlyRate, 5);
   const setYearly5Rate = (r) => setYearlyRate(Math.pow(r, 1/5));
 
-  const dailyRef = useRef();
-  const monthlyRef = useRef();
-  const yearly5Ref = useRef();
-
-  const [totalAmount, setTotalAmount] = useState(0);
-
   const [amount, setAmount] = useState(0);
-  const [dailyAmount, setDailyAmount] = useState(0);
-  const [monthlyAmount, setMonthlyAmount] = useState(0);
-  const [yearlyAmount, setYearlyAmount] = useState(0);
-  const [yearly5Amount, setYearly5Amount] = useState(0);
 
-  const dailyAmountRef = useRef();
-  const monthlyAmountRef = useRef();
-  const yearlyAmountRef = useRef();
-  const yearly5AmountRef = useRef();
+  const totalAmount = calculate(amount, rates);
 
   useEffect(() => {
     try {
       const saved = JSON.parse(window.localStorage.getItem("data"));
       if (saved) {
-        setYearly(saved.yearly);
-        setAmount(saved.amount);
-        setRates(saved.rates);
+        setYearlyRate(saved.yearlyRate || 1);
+        setAmount(saved.amount || 0);
       }
     } catch (e) {
       console.error(e);
@@ -105,93 +83,9 @@ function App() {
   useEffect(() => {
     window.localStorage.setItem(
       "data",
-      JSON.stringify({ yearly, amount, rates })
+      JSON.stringify({ yearlyRate, amount, rates })
     );
-  }, [yearly, amount, rates]);
-
-  useEffect(() => {
-    setTotalAmount(calculate(amount, rates));
-  }, [amount, rates]);
-
-  useEffect(() => {
-    const v = 1 + percentToFactor(calculate(yearly, rates));
-    const daily_v = Math.pow(v, 1 / 365) - 1;
-    const monthly_v = Math.pow(v, 1 / 12) - 1;
-    const yearly5_v = Math.pow(v, 5) - 1;
-
-    if (document.activeElement !== dailyRef.current) {
-      setDaily(factorToPercent(daily_v));
-    }
-    if (document.activeElement !== monthlyRef.current) {
-      setMonthly(factorToPercent(monthly_v));
-    }
-    if (document.activeElement !== yearly5Ref.current) {
-      setYearly5(factorToPercent(yearly5_v));
-    }
-
-    if (document.activeElement !== dailyAmountRef.current) {
-      setDailyAmount(totalAmount * daily_v);
-    }
-    if (document.activeElement !== monthlyAmountRef.current) {
-      setMonthlyAmount(totalAmount * monthly_v);
-    }
-    if (document.activeElement !== yearlyAmountRef.current) {
-      setYearlyAmount(totalAmount * (v - 1));
-    }
-    if (document.activeElement !== yearly5AmountRef.current) {
-      setYearly5Amount(totalAmount * yearly5_v);
-    }
-  }, [yearly, totalAmount, rates]);
-
-  function baseDaily(e) {
-    setDaily(e.target.value);
-    const v = 1 + percentToFactor(calculate(e.target.value, rates));
-    setYearly(factorToPercent(Math.pow(v, 365) - 1));
-  }
-
-  function baseMonthly(e) {
-    setMonthly(e.target.value);
-    const v = 1 + percentToFactor(calculate(e.target.value, rates));
-    setYearly(factorToPercent(Math.pow(v, 12) - 1));
-  }
-
-  function baseYearly(e) {
-    setYearly(e.target.value);
-  }
-
-  function baseYearly5(e) {
-    setYearly5(e.target.value);
-    const v = 1 + percentToFactor(calculate(e.target.value, rates));
-    setYearly(factorToPercent(Math.pow(v, 1 / 5) - 1));
-  }
-
-  function baseDailyAmount(e) {
-    setDailyAmount(e.target.value);
-    const v = calculate(e.target.value, rates);
-    setAmount(v / percentToFactor(daily));
-  }
-
-  function baseMonthlyAmount(e) {
-    setMonthlyAmount(e.target.value);
-    const v = calculate(e.target.value, rates);
-    setAmount(v / percentToFactor(monthly));
-  }
-
-  function baseYearlyAmount(e) {
-    setYearlyAmount(e.target.value);
-    const v = calculate(e.target.value, rates);
-    setAmount(v / percentToFactor(yearly));
-  }
-
-  function baseYearly5Amount(e) {
-    setYearly5Amount(e.target.value);
-    const v = calculate(e.target.value, rates);
-    setAmount(v / percentToFactor(yearly5));
-  }
-
-  function baseAmount(e) {
-    setAmount(e.target.value);
-  }
+  }, [yearlyRate, amount, rates]);
 
   return (
     <>
@@ -204,7 +98,7 @@ function App() {
                 className="input"
                 type="text"
                 value={amount}
-                onChange={baseAmount}
+                onChange={(e) => setAmount(e.target.value)}
               />
             </div>
             <p className="help">Amount to multiply by the interest.</p>
