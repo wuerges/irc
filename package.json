@@ -4,14 +4,14 @@
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5",
-    "@testing-library/react": "^12",
-    "@testing-library/user-event": "^13",
-    "bulma": "^0.9.3",
-    "mathjs": "^9.4.4",
-    "node-sass": "^6",
-    "react": "^17",
-    "react-dom": "^17",
-    "react-scripts": "^4",
+    "@testing-library/react": "^13",
+    "@testing-library/user-event": "^14",
+    "bulma": "^0.9",
+    "mathjs": "^10",
+    "node-sass": "^7",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-scripts": "^5",
     "web-vitals": "^2"
   },
   "scripts": {

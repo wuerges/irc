@@ -22,12 +22,47 @@ function factorToPercent(f) {
   return f * 100;
 }
 
+const Field = (props) => {
+  const { rates, forward, inverse } = props;
+  const ref = useRef(null);
+
+  const [value, setValue] = useState(forward);
+
+  const onChange = (e) => {
+    const targetValue = calculate(e.target.value, rates);
+    setValue(targetValue);
+    inverse(targetValue);
+  };
+
+  const inputValue = document.activeElement === ref.current ? value : forward;
+
+  return <input
+    className="input"
+    type="text"
+    value={inputValue}
+    onChange={onChange}
+    ref={ref}
+  />
+};
+
 function App() {
   const [daily, setDaily] = useState(0);
   const [monthly, setMonthly] = useState(0);
   const [yearly, setYearly] = useState(0);
   const [yearly5, setYearly5] = useState(0);
   const [rates, setRates] = useState({});
+
+  const yearlyRate = 1+percentToFactor(yearly);
+  const setYearlyRate = (r) => setYearly(factorToPercent(r-1));
+
+  const dailyRate = Math.pow(yearlyRate, 1/365);
+  const setDailyRate = (r) => setYearlyRate(Math.pow(r, 365));
+
+  const monthlyRate = Math.pow(yearlyRate, 12/365);
+  const setMonthlyRate = (r) => setYearlyRate(Math.pow(r, 365/12));
+
+  const yearly5Rate = Math.pow(yearlyRate, 12*5/365);
+  const set5YearlyRate = (r) => setYearlyRate(Math.pow(r, 365/(12*5)));
 
   const dailyRef = useRef();
   const monthlyRef = useRef();
@@ -190,12 +225,10 @@ function App() {
           <div className="field">
             <label className="label">Daily</label>
             <div className="control">
-              <input
-                className="input"
-                type="text"
-                value={daily}
-                ref={dailyRef}
-                onChange={baseDaily}
+              <Field
+                forward={factorToPercent(dailyRate)-100}
+                inverse={(v) => setDailyRate(percentToFactor(v+100))}
+                rates={rates}
               />
             </div>
             <p className="help">Daily interest rate in %.</p>
@@ -205,12 +238,10 @@ function App() {
           <div className="field">
             <label className="label">Daily Amount</label>
             <div className="control">
-              <input
-                className="input"
-                type="text"
-                value={dailyAmount}
-                ref={dailyAmountRef}
-                onChange={baseDailyAmount}
+              <Field
+                forward={amount*(dailyRate-1)}
+                inverse={(v) => setAmount(v/(dailyRate-1))}
+                rates={rates}
               />
             </div>
             <p className="help">Amount earned in a day.</p>
