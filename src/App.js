@@ -58,11 +58,11 @@ function App() {
   const dailyRate = Math.pow(yearlyRate, 1/365);
   const setDailyRate = (r) => setYearlyRate(Math.pow(r, 365));
 
-  const monthlyRate = Math.pow(yearlyRate, 12/365);
-  const setMonthlyRate = (r) => setYearlyRate(Math.pow(r, 365/12));
+  const monthlyRate = Math.pow(yearlyRate, 1/12);
+  const setMonthlyRate = (r) => setYearlyRate(Math.pow(r, 12));
 
-  const yearly5Rate = Math.pow(yearlyRate, 12*5/365);
-  const set5YearlyRate = (r) => setYearlyRate(Math.pow(r, 365/(12*5)));
+  const yearly5Rate = Math.pow(yearlyRate, 5);
+  const setYearly5Rate = (r) => setYearlyRate(Math.pow(r, 1/5));
 
   const dailyRef = useRef();
   const monthlyRef = useRef();
@@ -253,12 +253,10 @@ function App() {
           <div className="field">
             <label className="label">Monthly</label>
             <div className="control">
-              <input
-                className="input"
-                type="text"
-                value={monthly}
-                ref={monthlyRef}
-                onChange={baseMonthly}
+              <Field
+                forward={factorToPercent(monthlyRate)-100}
+                inverse={(v) => setMonthlyRate(percentToFactor(v+100))}
+                rates={rates}
               />
             </div>
             <p className="help">Monthly interest rate in %.</p>
@@ -268,12 +266,10 @@ function App() {
           <div className="field">
             <label className="label">Monthly Amount</label>
             <div className="control">
-              <input
-                className="input"
-                type="text"
-                ref={monthlyAmountRef}
-                value={monthlyAmount}
-                onChange={baseMonthlyAmount}
+              <Field
+                forward={amount*(monthlyRate-1)}
+                inverse={(v) => setAmount(v/(monthlyRate-1))}
+                rates={rates}
               />
             </div>
             <p className="help">Amount earned in a month.</p>
@@ -316,13 +312,12 @@ function App() {
           <div className="field">
             <label className="label">5 years</label>
             <div className="control">
-              <input
-                className="input"
-                type="text"
-                value={yearly5}
-                ref={yearly5Ref}
-                onChange={baseYearly5}
+            <Field
+                forward={factorToPercent(yearly5Rate)-100}
+                inverse={(v) => setYearly5Rate(percentToFactor(v+100))}
+                rates={rates}
               />
+
             </div>
             <p className="help">Yearly interest rate in 5 years in %.</p>
           </div>
@@ -332,12 +327,10 @@ function App() {
           <div className="field">
             <label className="label">5 year Amount</label>
             <div className="control">
-              <input
-                className="input"
-                type="text"
-                value={yearly5Amount}
-                ref={yearly5AmountRef}
-                onChange={baseYearly5Amount}
+              <Field
+                forward={amount*(yearly5Rate-1)}
+                inverse={(v) => setAmount(v/(yearly5Rate-1))}
+                rates={rates}
               />
             </div>
             <p className="help">Amount earned in 5 years.</p>
