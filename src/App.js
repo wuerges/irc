@@ -52,8 +52,11 @@ function App() {
   const [yearly5, setYearly5] = useState(0);
   const [rates, setRates] = useState({});
 
-  const yearlyRate = 1+percentToFactor(yearly);
-  const setYearlyRate = (r) => setYearly(factorToPercent(r-1));
+
+  const [yearlyRate, setYearlyRate] = useState(1);
+
+  // const yearlyRate = 1+percentToFactor(yearly);
+  // const setYearlyRate = (r) => setYearly(factorToPercent(r-1));
 
   const dailyRate = Math.pow(yearlyRate, 1/365);
   const setDailyRate = (r) => setYearlyRate(Math.pow(r, 365));
@@ -281,12 +284,11 @@ function App() {
           <div className="field">
             <label className="label">Yearly</label>
             <div className="control">
-              <input
-                className="input"
-                type="text"
-                value={yearly}
-                onChange={baseYearly}
-              />
+              <Field
+                  forward={factorToPercent(yearlyRate)-100}
+                  inverse={(v) => setYearlyRate(percentToFactor(v+100))}
+                  rates={rates}
+                />
             </div>
             <p className="help">Yearly interest rate in %.</p>
           </div>
@@ -295,12 +297,10 @@ function App() {
           <div className="field">
             <label className="label">Yearly Amount</label>
             <div className="control">
-              <input
-                className="input"
-                type="text"
-                value={yearlyAmount}
-                ref={yearlyAmountRef}
-                onChange={baseYearlyAmount}
+              <Field
+                forward={amount*(yearlyRate-1)}
+                inverse={(v) => setAmount(v/(yearlyRate-1))}
+                rates={rates}
               />
             </div>
             <p className="help">Amount earned in a year.</p>
