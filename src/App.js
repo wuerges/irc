@@ -1,6 +1,7 @@
 import "./App.scss";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useMemo } from "react";
 import { evaluate } from "mathjs";
+import useFetch from "use-http";
 
 function calculate(expr, rates) {
   expr = expr.toString();
@@ -46,9 +47,13 @@ const Field = (props) => {
 };
 
 function App() {
-  const [rates, setRates] = useState({});
+  const { data } = useFetch('https://api.coinbase.com/v2/exchange-rates', {}, []);
 
-  const [yearlyRate, setYearlyRate] = useState(1);
+  const saved = useMemo(() => JSON.parse(window.localStorage.getItem("data")), []);
+
+  const rates = data?.data?.rates || saved?.rates || {};
+
+  const [yearlyRate, setYearlyRate] = useState(saved?.yearlyRate || 1);
 
   const dailyRate = Math.pow(yearlyRate, 1/365);
   const setDailyRate = (r) => setYearlyRate(Math.pow(r, 365));
@@ -59,26 +64,9 @@ function App() {
   const yearly5Rate = Math.pow(yearlyRate, 5);
   const setYearly5Rate = (r) => setYearlyRate(Math.pow(r, 1/5));
 
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState(saved?.amount || 0);
 
   const totalAmount = calculate(amount, rates);
-
-  useEffect(() => {
-    try {
-      const saved = JSON.parse(window.localStorage.getItem("data"));
-      if (saved) {
-        setYearlyRate(saved.yearlyRate || 1);
-        setAmount(saved.amount || 0);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-    fetch("https://api.coinbase.com/v2/exchange-rates")
-      .then((response) => response.json())
-      .then((data) => {
-        setRates(data["data"]["rates"]);
-      });
-  }, []);
 
   useEffect(() => {
     window.localStorage.setItem(
@@ -136,7 +124,7 @@ function App() {
             <label className="label">Daily Amount</label>
             <div className="control">
               <Field
-                forward={amount*(dailyRate-1)}
+                forward={totalAmount*(dailyRate-1)}
                 inverse={(v) => setAmount(v/(dailyRate-1))}
                 rates={rates}
               />
@@ -164,7 +152,7 @@ function App() {
             <label className="label">Monthly Amount</label>
             <div className="control">
               <Field
-                forward={amount*(monthlyRate-1)}
+                forward={totalAmount*(monthlyRate-1)}
                 inverse={(v) => setAmount(v/(monthlyRate-1))}
                 rates={rates}
               />
@@ -192,7 +180,7 @@ function App() {
             <label className="label">Yearly Amount</label>
             <div className="control">
               <Field
-                forward={amount*(yearlyRate-1)}
+                forward={totalAmount*(yearlyRate-1)}
                 inverse={(v) => setAmount(v/(yearlyRate-1))}
                 rates={rates}
               />
@@ -222,7 +210,7 @@ function App() {
             <label className="label">5 year Amount</label>
             <div className="control">
               <Field
-                forward={amount*(yearly5Rate-1)}
+                forward={totalAmount*(yearly5Rate-1)}
                 inverse={(v) => setAmount(v/(yearly5Rate-1))}
                 rates={rates}
               />

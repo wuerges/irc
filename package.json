@@ -12,6 +12,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-scripts": "^5",
+    "use-http": "^1.0.26",
     "web-vitals": "^2"
   },
   "scripts": {
