@@ -30,8 +30,8 @@ const Field = (props) => {
   const [value, setValue] = useState(forward);
 
   const onChange = (e) => {
+    setValue(e.target.value);
     const targetValue = calculate(e.target.value, rates);
-    setValue(targetValue);
     inverse(targetValue);
   };
 
