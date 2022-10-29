@@ -7,13 +7,13 @@
     "@testing-library/react": "^13",
     "@testing-library/user-event": "^14",
     "bulma": "^0.9",
-    "mathjs": "^10",
+    "mathjs": "^11",
     "node-sass": "^7",
     "react": "^18",
     "react-dom": "^18",
     "react-scripts": "^5",
-    "use-http": "^1.0.26",
-    "web-vitals": "^2"
+    "use-http": "^1.0.27",
+    "web-vitals": "^3"
   },
   "scripts": {
     "start": "react-scripts start",
